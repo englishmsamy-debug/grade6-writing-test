@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Grade 6 Writing Test</title>
+<style>
+:root{--ink:#172033;--blue:#2457a7;--pale:#eef4ff;--line:#d5dbe7;--red:#b42318}
+*{box-sizing:border-box}body{margin:0;background:#f3f5f9;color:var(--ink);font:16px/1.5 Arial,Helvetica,sans-serif}
+.wrap{max-width:850px;margin:28px auto;padding:0 16px}.panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:28px;box-shadow:0 6px 24px #1c2d4a0c}
+h1{text-align:center;font-size:25px;margin:0 0 4px}.sub{text-align:center;color:#596579;margin:0 0 22px}.fields{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin:18px 0}label{display:block;font-weight:700;margin-bottom:6px}input,textarea{width:100%;border:1px solid #aeb8c9;border-radius:8px;padding:11px;font:inherit}input:focus,textarea:focus{outline:2px solid #9bbcff;border-color:var(--blue)}.prompt{background:var(--pale);border-left:4px solid var(--blue);padding:16px 18px;border-radius:8px}.prompt p{margin:0 0 8px}.prompt ul{margin:8px 0 0;padding-left:22px}.timerrow{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:22px 0 10px}.timer{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}.timer.urgent{color:var(--red)}.muted{color:#596579;font-size:14px}textarea{min-height:230px;resize:vertical} .countrow{display:flex;justify-content:space-between;gap:12px;margin-top:7px;font-size:14px}.count{font-weight:700}.count.good{color:#18794e}.count.bad{color:var(--red)}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}button{border:0;border-radius:8px;padding:11px 17px;font:700 15px Arial;cursor:pointer}.primary{background:var(--blue);color:#fff}.secondary{background:#e9edf5;color:#172033}button:disabled{opacity:.45;cursor:not-allowed}.notice{margin-top:14px;color:#596579;font-size:13px}.status{min-height:22px;margin-top:10px;font-weight:700}.paper-only{display:none}
+@media(max-width:600px){.panel{padding:18px}.fields{grid-template-columns:1fr}h1{font-size:22px}.timerrow{align-items:flex-start;flex-direction:column}}
+@media print{body{background:#fff;font-size:12pt}.wrap{max-width:none;margin:0;padding:0}.panel{border:0;box-shadow:none;border-radius:0;padding:0}.no-print{display:none!important}.paper-only{display:block}.paper-title{text-align:center;font-size:18pt;font-weight:700;margin-bottom:4px}.paper-sub{text-align:center;margin-bottom:24px}.paper-meta{margin:18px 0;display:flex;gap:40px}.paper-prompt{border:1px solid #777;padding:12px;margin:14px 0}.paper-answer{white-space:pre-wrap;overflow-wrap:anywhere;min-height:200px;border:1px solid #888;padding:12px}.paper-count{margin-top:10px;text-align:right}.paper-footer{margin-top:28px;text-align:right;font-style:italic} @page{size:A4;margin:18mm}}
+</style>
+</head>
+<body>
+<div class="wrap"><main class="panel">
+<div class="no-print">
+<h1>GRADE 6 – WRITING TEST</h1><p class="sub">Time allowed: 20 minutes</p>
+<div class="fields"><div><label for="studentName">Full name</label><input id="studentName" autocomplete="off" placeholder="Enter your full name" maxlength="100"></div><div><label for="studentClass">Class</label><input id="studentClass" autocomplete="off" placeholder="e.g. 6A" maxlength="30"></div></div>
+<section class="prompt"><p><strong>Writing task</strong></p><p>Which type of house do you live in now? Write a paragraph of <strong>80–100 words</strong> to describe it.</p><p><strong>You should include:</strong></p><ul><li>Which type of house is it?</li><li>What does it look like on the outside?</li><li>How many rooms are there in the house?</li><li>What is there in each room?</li><li>Which room(s) do you like most, and why?</li></ul></section>
+<div class="timerrow"><div>Time remaining: <span id="timer" class="timer">20:00</span></div><span class="muted">The timer starts when this page opens.</span></div>
+<label for="answer">Write your paragraph below</label><textarea id="answer" spellcheck="true" autocomplete="off" placeholder="Write your paragraph here..." maxlength="3000"></textarea>
+<div class="countrow"><span id="wordCount" class="count bad">0 words</span><span>Required: 80–100 words</span></div>
+<div class="actions"><button id="exportBtn" class="primary" disabled>Export test paper to PDF</button><button id="clearBtn" class="secondary" type="button">Clear answer</button></div>
+<p class="notice">Academic honesty: write independently. Copying and pasting are disabled in this answer box. These browser restrictions cannot completely prevent AI use or copying through another device. When you export, choose “Save as PDF” in the print window.</p><div id="status" class="status" role="status"></div>
+</div>
+<div class="paper-only">
+<div class="paper-title">GRADE 6 – WRITING TEST</div><div class="paper-sub">Time allowed: 20 minutes</div>
+<div class="paper-meta"><div><strong>Full name:</strong> <span id="printName"></span></div><div><strong>Class:</strong> <span id="printClass"></span></div></div>
+<div class="paper-prompt"><strong>Writing task:</strong><br>Which type of house do you live in now? Write a paragraph of 80–100 words to describe it.<br><br><strong>Suggestions:</strong> Type of house; outside appearance; number of rooms; what is in each room; your favourite room(s) and why.</div>
+<div class="paper-answer" id="printAnswer"></div><div class="paper-count">Word count: <span id="printCount"></span></div><div class="paper-footer">Student’s work</div>
+</div>
+</main></div>
+<script>
+(function(){
+ const name=document.getElementById('studentName'), cls=document.getElementById('studentClass'), answer=document.getElementById('answer');
+ const countEl=document.getElementById('wordCount'), exportBtn=document.getElementById('exportBtn'), timerEl=document.getElementById('timer'), status=document.getElementById('status');
+ let remaining=20*60, expired=false;
+ function words(){const t=answer.value.trim();return t?t.split(/\s+/).filter(Boolean).length:0}
+ function updateCount(){const n=words();countEl.textContent=n+' word'+(n===1?'':'s');countEl.className='count '+(n>=80&&n<=100?'good':'bad');exportBtn.disabled=!(n>=80&&n<=100&&name.value.trim()&&cls.value.trim());}
+ function tick(){const m=Math.floor(remaining/60),s=remaining%60;timerEl.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');if(remaining<=60)timerEl.classList.add('urgent');if(remaining<=0){expired=true;answer.readOnly=true;status.textContent='Time is up. Your answer is locked. If it has 80–100 words and your details are filled in, you can still export it.';clearInterval(clock);updateCount();return;}remaining--;}
+ const clock=setInterval(tick,1000);tick();
+ answer.addEventListener('input',()=>{status.textContent='';updateCount()});name.addEventListener('input',updateCount);cls.addEventListener('input',updateCount);
+ ['paste','copy','cut','drop'].forEach(ev=>answer.addEventListener(ev,e=>{e.preventDefault();status.textContent='Copying and pasting are disabled. Please type your own work.'}));
+ answer.addEventListener('contextmenu',e=>e.preventDefault());
+ document.addEventListener('visibilitychange',()=>{if(document.hidden&&!expired)status.textContent='Reminder: please complete the test independently and keep this page open.'});
+ document.getElementById('clearBtn').addEventListener('click',()=>{if(!expired&&confirm('Clear your answer?')){answer.value='';updateCount();status.textContent='Your answer has been cleared.'}});
+ exportBtn.addEventListener('click',()=>{const n=words();if(n<80||n>100||!name.value.trim()||!cls.value.trim()){status.textContent='Please enter your name, class, and 80–100 words before exporting.';return;}document.getElementById('printName').textContent=name.value.trim();document.getElementById('printClass').textContent=cls.value.trim();document.getElementById('printAnswer').textContent=answer.value.trim();document.getElementById('printCount').textContent=n;window.print()});
+ updateCount();
+})();
+</script>
+</body>
+</html>
